@@ -57,7 +57,19 @@
           <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-gray-100">Yeni Çekiliş</h2>
           <form id="create-draw-form" class="space-y-4">
             <input type="text" id="draw-name" placeholder="Çekiliş Adı (örn: Yılbaşı)" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" required>
-            <input type="date" id="draw-date" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" required>
+            <select id="draw-session" class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition" required>
+              <option value="" disabled selected>Oturum Numarası Seçin</option>
+              <option value="1">Oturum: 1</option>
+              <option value="2">Oturum: 2</option>
+              <option value="3">Oturum: 3</option>
+              <option value="4">Oturum: 4</option>
+              <option value="5">Oturum: 5</option>
+              <option value="6">Oturum: 6</option>
+              <option value="7">Oturum: 7</option>
+              <option value="8">Oturum: 8</option>
+              <option value="9">Oturum: 9</option>
+              <option value="10">Oturum: 10</option>
+            </select>
             <button type="submit" class="w-full bg-green-600 hover:bg-green-500 py-2.5 rounded-lg font-bold transition shadow-lg text-white">Oluştur</button>
           </form>
         </div>
@@ -72,9 +84,15 @@
 
       <!-- Detail Manage Draw -->
       <div id="draw-manage-panel" class="hidden w-full md:w-2/3 bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col border border-gray-700">
-        <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-6">
-          <h2 id="manage-title" class="text-2xl font-bold text-white">Çekiliş Yönetimi</h2>
-          <span id="manage-date" class="text-gray-400 bg-gray-900 px-3 py-1 rounded-full text-sm font-mono border border-gray-700"></span>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-700 pb-4 mb-6 gap-4">
+          <div>
+            <h2 id="manage-title" class="text-2xl font-bold text-white">Çekiliş Yönetimi</h2>
+            <span id="manage-session" class="inline-block mt-2 text-gray-400 bg-gray-900 px-3 py-1 rounded-full text-sm font-mono border border-gray-700"></span>
+          </div>
+          <button id="btn-presentation" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold transition shadow-lg flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            Tahtaya Yansıt (Sunum Modu)
+          </button>
         </div>
 
         <!-- Participants Stats -->
