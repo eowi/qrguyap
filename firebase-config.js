@@ -1,32 +1,43 @@
-/* 
- * FIREBASE KURULUM TALİMATLARI
- * 1. https://console.firebase.google.com/ adresine gidin.
- * 2. Yeni bir proje oluşturun.
- * 3. Sol menüden "Build" > "Firestore Database" seçin ve veritabanını oluşturun. 
- *    (Test mode seçerek kuralları geçici olarak açık bırakabilirsiniz: `allow read, write: if true;`)
- * 4. "Project Overview" sayfasında "Web" (</>) ikonuna tıklayarak web uygulamanızı ekleyin.
- * 5. Size verilen firebaseConfig objesini aşağıdaki `firebaseConfig` değişkenine yapıştırın.
- */
-
+// Firebase modüllerini CDN üzerinden çekiyoruz (Node.js gerektirmez)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
+// Senin Firebase projenin özel kimlik bilgileri
 const firebaseConfig = {
-  // BURAYA KENDİ FIREBASE AYARLARINIZI GİRİN. ÖRNEK:
-  // apiKey: "AIza...",
-  // authDomain: "proje-id.firebaseapp.com",
-  // projectId: "proje-id",
-  // storageBucket: "proje-id.appspot.com",
-  // messagingSenderId: "123456789",
-  // appId: "1:123456789:web:abcde"
+  apiKey: "AIzaSyA3nfXsCVbP1IxTEbxBVoYEJf4pQOLg1Vg",
+  authDomain: "guyapcekilis.firebaseapp.com",
+  projectId: "guyapcekilis",
+  storageBucket: "guyapcekilis.firebasestorage.app",
+  messagingSenderId: "951263070386",
+  appId: "1:951263070386:web:fdbc8760ec80b1501be1ab",
+  measurementId: "G-83T8QBRH7N"
 };
 
-let app, db;
-try {
-  app = initializeApp(firebaseConfig);
-  db = getFirestore(app);
-} catch (e) {
-  // Config hatalıysa devam eder ama firebase özellikleri çalışmaz
-}
+// Firebase'i başlatıyoruz
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-export { db, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, onSnapshot };
+// Diğer dosyaların (admin.js, participant.js) veritabanına erişebilmesi için dışarı aktarıyoruz
+export {
+  db,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  onSnapshot
+};
