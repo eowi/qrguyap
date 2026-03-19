@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const drawsList = document.getElementById('draws-list');
   const managePanel = document.getElementById('draw-manage-panel');
   const manageTitle = document.getElementById('manage-title');
-  const manageDate = document.getElementById('manage-date');
+  const manageSession = document.getElementById('manage-session');
+  const btnPresentation = document.getElementById('btn-presentation');
   const statStart = document.getElementById('stat-start');
   const statEnd = document.getElementById('stat-end');
   
@@ -84,11 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = `
           <div>
             <div class="font-bold text-gray-200">${data.name}</div>
-            <div class="text-xs text-gray-500">${data.date}</div>
+            <div class="text-xs text-info text-gray-500">Oturum: ${data.session}</div>
           </div>
           <button class="bg-blue-600/20 text-blue-400 border border-blue-600/50 hover:bg-blue-600 hover:text-white px-3 py-1 rounded text-xs transition">Yönet</button>
         `;
-        li.addEventListener('click', () => openDraw(docSnap.id, data.name, data.date));
+        li.addEventListener('click', () => openDraw(docSnap.id, data.name, data.session));
         drawsList.appendChild(li);
       });
     });
@@ -97,26 +98,32 @@ document.addEventListener('DOMContentLoaded', () => {
   createDrawForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('draw-name').value.trim();
-    const date = document.getElementById('draw-date').value;
+    const session = document.getElementById('draw-session').value;
     
-    if(name && date && db) {
-      await addDoc(collection(db, CONSTANTS.COLLECTION_DRAWS), { name, date, createdAt: new Date().toISOString() });
+    if(name && session && db) {
+      await addDoc(collection(db, CONSTANTS.COLLECTION_DRAWS), { name, session, createdAt: new Date().toISOString() });
       createDrawForm.reset();
       alert(CONSTANTS.MESSAGES.SUCCESS_DRAW_CREATED);
     }
   });
 
-  function openDraw(id, name, date) {
+  function openDraw(id, name, session) {
     activeDrawId = id;
     activeDrawName = name;
     managePanel.classList.remove('hidden');
     manageTitle.textContent = name;
-    manageDate.textContent = date;
+    manageSession.textContent = "Oturum: " + session;
     
     // reset UI
     finalistArea.classList.add('hidden');
     winnerDisplay.classList.add('hidden');
     participantsData = { start: [], end: [] };
+
+    // Setup Presentation Button
+    btnPresentation.onclick = () => {
+      const url = `winner.html?id=${id}&name=${encodeURIComponent(name)}&session=${session}`;
+      window.open(url, '_blank');
+    };
 
     generateQRCodes(id, name);
     listenToParticipants(id);
