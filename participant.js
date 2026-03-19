@@ -12,15 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const successState = document.getElementById('success-state');
   const successMsg = document.getElementById('success-msg');
   const formTitle = document.getElementById('form-title');
+  const welcomeMsg = document.getElementById('welcome-msg');
 
   if (urlParams.has('name')) {
     formTitle.textContent = decodeURIComponent(drawName) + " Katılımı";
   }
 
   if (!drawId || !stage) {
-    errorMsg.textContent = CONSTANTS.MESSAGES.ERROR_MISSING_DRAW;
-    errorMsg.classList.remove('hidden');
     form.classList.add('hidden');
+    formTitle.classList.add('hidden');
+    if(welcomeMsg) welcomeMsg.classList.remove('hidden');
     return;
   }
 
@@ -28,8 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const fname = document.getElementById('fname').value.trim();
     const lname = document.getElementById('lname').value.trim();
+    const phone = document.getElementById('phone').value.trim();
 
-    if (!fname || !lname) {
+    if (!fname || !lname || !phone) {
       errorMsg.textContent = CONSTANTS.MESSAGES.ERROR_FILL_FORM;
       errorMsg.classList.remove('hidden');
       return;
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
            drawId: drawId,
            stage: stage,
            fullName: fullName,
+           phone: phone,
            timestamp: new Date().toISOString()
          });
       }
