@@ -1,4 +1,4 @@
-import { db, collection, addDoc, getDocs, doc, query, where, onSnapshot } from './firebase-config.js';
+import { db, collection, addDoc, getDocs, doc, deleteDoc, query, where, onSnapshot } from './firebase-config.js';
 import { CONSTANTS } from './constants.js';
 import { fuzzyMatchName } from './fuzzyMatch.js';
 
@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = document.getElementById('admin-id').value;
     const pass = document.getElementById('admin-pass').value;
 
-    if (id === CONSTANTS.MASTER_ADMIN_ID && pass === CONSTANTS.MASTER_ADMIN_PASS) {
+    if ((id === CONSTANTS.MASTER_ADMIN_ID && pass === CONSTANTS.MASTER_ADMIN_PASS) || 
+        (id === CONSTANTS.SECONDARY_ADMIN_ID && pass === CONSTANTS.SECONDARY_ADMIN_PASS)) {
       localStorage.setItem(CONSTANTS.LOCAL_STORAGE_ADMIN_KEY, 'true');
       checkLogin();
     } else {
@@ -61,6 +62,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const winnerDisplay = document.getElementById('winner-display');
   const winnerName = document.getElementById('winner-name');
 
+  // Modals
+  const participantModal = document.getElementById('participant-modal');
+  const participantModalTitle = document.getElementById('participant-modal-title');
+  const participantModalList = document.getElementById('participant-modal-list');
+  const closeParticipantModal = document.getElementById('close-participant-modal');
+  
+  const qrModal = document.getElementById('qr-modal');
+  const qrModalContent = document.getElementById('qr-modal-content');
+  const qrModalTitle = document.getElementById('qr-modal-title');
+  const closeQrModal = document.getElementById('close-qr-modal');
+  
+  const btnShowStartModal = document.getElementById('btn-show-start-modal');
+  const btnShowEndModal = document.getElementById('btn-show-end-modal');
+  const btnZoomStart = document.getElementById('btn-zoom-start');
+  const btnZoomEnd = document.getElementById('btn-zoom-end');
+
+  // Modal Closers
+  closeParticipantModal.onclick = () => participantModal.classList.add('hidden');
+  closeQrModal.onclick = () => qrModal.classList.add('hidden');
+
   let activeDrawId = null;
   let activeDrawName = "";
   let unsubscribeParticipants = null;
@@ -87,10 +108,28 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="font-bold text-gray-200">${data.name}</div>
             <div class="text-xs text-info text-gray-500">Oturum: ${data.session}</div>
           </div>
-          <button class="bg-blue-600/20 text-blue-400 border border-blue-600/50 hover:bg-blue-600 hover:text-white px-3 py-1 rounded text-xs transition">Yönet</button>
+          <div class="flex gap-2">
+            <button class="bg-red-600/20 text-red-400 border border-red-600/50 hover:bg-red-600 hover:text-white px-3 py-1 rounded text-xs transition z-10" id="del-${docSnap.id}">Sil</button>
+            <button class="bg-blue-600/20 text-blue-400 border border-blue-600/50 hover:bg-blue-600 hover:text-white px-3 py-1 rounded text-xs transition">Yönet</button>
+          </div>
         `;
-        li.addEventListener('click', () => openDraw(docSnap.id, data.name, data.session));
+        li.addEventListener('click', (e) => {
+          if(e.target.id === `del-${docSnap.id}`) return;
+          openDraw(docSnap.id, data.name, data.session);
+        });
+
         drawsList.appendChild(li);
+
+        // Delete Listener
+        document.getElementById(`del-${docSnap.id}`).addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if(confirm(`"${data.name}" çekilişini silmek istediğinize emin misiniz?`)) {
+             await deleteDoc(doc(db, CONSTANTS.COLLECTION_DRAWS, docSnap.id));
+             if(activeDrawId === docSnap.id) {
+               managePanel.classList.add('hidden');
+             }
+          }
+        });
       });
     });
   }
@@ -154,8 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       snapshot.forEach(docSnap => {
         const d = docSnap.data();
-        if(d.stage === CONSTANTS.STAGE_START) participantsData.start.push(d.fullName);
-        else if(d.stage === CONSTANTS.STAGE_END) participantsData.end.push(d.fullName);
+        if(d.stage === CONSTANTS.STAGE_START) participantsData.start.push(d);
+        else if(d.stage === CONSTANTS.STAGE_END) participantsData.end.push(d);
       });
 
       statStart.textContent = participantsData.start.length;
@@ -163,19 +202,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Modals logic for stat buttons
+  btnShowStartModal.onclick = () => {
+    participantModalTitle.textContent = "Etkinlik Başı Listesi";
+    renderParticipantModalList(participantsData.start);
+    participantModal.classList.remove('hidden');
+  };
+  btnShowEndModal.onclick = () => {
+    participantModalTitle.textContent = "Etkinlik Bitiş Listesi";
+    renderParticipantModalList(participantsData.end);
+    participantModal.classList.remove('hidden');
+  };
+
+  function renderParticipantModalList(arr) {
+    if(arr.length === 0) {
+      participantModalList.innerHTML = '<li class="p-4 text-center text-gray-500">Kayıt Bulunamadı.</li>';
+      return;
+    }
+    participantModalList.innerHTML = arr.map(p => `
+      <li class="p-3 hover:bg-gray-800/80 transition rounded flex justify-between items-center">
+        <span class="font-semibold text-gray-200">${p.fullName}</span>
+        <span class="text-xs text-gray-400 font-mono bg-gray-900 px-2 py-1 rounded">${p.phone || 'Yok'}</span>
+      </li>
+    `).join('');
+  }
+
+  // Large QR Modals logic
+  btnZoomStart.onclick = () => {
+    qrModalContent.innerHTML = document.getElementById('qr-start').innerHTML;
+    qrModalTitle.textContent = "ETKİNLİK BAŞI QR'I";
+    // Scale up the svg/img
+    const el = qrModalContent.querySelector('img') || qrModalContent.querySelector('canvas');
+    if(el) { el.style.width = '300px'; el.style.height = '300px'; }
+    qrModal.classList.remove('hidden');
+  };
+  btnZoomEnd.onclick = () => {
+    qrModalContent.innerHTML = document.getElementById('qr-end').innerHTML;
+    qrModalTitle.textContent = "ETKİNLİK BİTİŞ QR'I";
+    const el = qrModalContent.querySelector('img') || qrModalContent.querySelector('canvas');
+    if(el) { el.style.width = '300px'; el.style.height = '300px'; }
+    qrModal.classList.remove('hidden');
+  };
+
   runFuzzyBtn.addEventListener('click', () => {
     finalistsPool = [];
-    // Start listesindeki her isim için, end listesinde fuzzy match ara.
-    // Eşleşenleri al (Basit algoritma, duplicate handle edilmeli gerçekte ama prototype için yeterli)
     
-    // Copy for tracking matched end elements so we don't match same end element twice
     let availableEnds = [...participantsData.end];
 
-    participantsData.start.forEach(startName => {
+    participantsData.start.forEach(startP => {
       for(let i=0; i < availableEnds.length; i++) {
-        if(fuzzyMatchName(startName, availableEnds[i])) {
-           finalistsPool.push(startName); // Finalist ismi
-           availableEnds.splice(i, 1); // Remove from available
+        if(fuzzyMatchName(startP.fullName, availableEnds[i].fullName)) {
+           finalistsPool.push(startP.fullName);
+           availableEnds.splice(i, 1);
            break;
         }
       }
