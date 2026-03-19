@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (drawName) {
-    drawNameEl.textContent = decodeURIComponent(drawName);
+    drawNameEl.textContent = `${decodeURIComponent(drawName)} çekilişinin kazananı`;
   }
   if (session) {
     drawSessionEl.textContent = `Oturum: ${session}`;
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     finalistsPool = [...new Set(finalistsPool)];
 
     if(finalistsPool.length > 0) {
-      infoEl.textContent = `${finalistsPool.length} Finalist Hazır!`;
+      infoEl.textContent = `${finalistsPool.length} Katılımcı`;
       determineBtn.disabled = false;
       determineBtn.classList.remove('cursor-not-allowed', 'opacity-50');
     } else {
