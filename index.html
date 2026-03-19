@@ -26,18 +26,18 @@
       <form id="participation-form" class="space-y-5">
         <div>
           <label class="block text-sm font-medium mb-1 text-gray-300">Adınız</label>
-          <input type="text" id="fname" required
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white">
+          <input type="text" id="fname" required placeholder="Örnek: Ahmet"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
         </div>
         <div>
           <label class="block text-sm font-medium mb-1 text-gray-300">Soyadınız</label>
-          <input type="text" id="lname" required
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white">
+          <input type="text" id="lname" required placeholder="Örnek: Mutlu"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
         </div>
         <div>
           <label class="block text-sm font-medium mb-1 text-gray-300">Telefon Numarası</label>
-          <input type="tel" id="phone" required
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white">
+          <input type="tel" id="phone" required placeholder="05321234567" pattern="[0-9]{11}" maxlength="11" minlength="11" title="Lütfen 11 haneli telefon numaranızı giriniz (Örn: 05321234567)"
+            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
         </div>
         <button type="submit"
           class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-lg shadow-blue-500/30 transform hover:-translate-y-0.5 mt-4">Katıl</button>
