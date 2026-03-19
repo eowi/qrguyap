@@ -1,6 +1,8 @@
 export const CONSTANTS = {
   MASTER_ADMIN_ID: "eowi",
   MASTER_ADMIN_PASS: "getex680123",
+  SECONDARY_ADMIN_ID: "guyap2026",
+  SECONDARY_ADMIN_PASS: "guyap2026cekilis",
   LOCAL_STORAGE_ADMIN_KEY: "raffle_admin_logged_in",
   COLLECTION_DRAWS: "draws",
   COLLECTION_PARTICIPANTS: "participants",
