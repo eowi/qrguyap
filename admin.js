@@ -1,4 +1,4 @@
-import { db, collection, addDoc, getDocs, doc, deleteDoc, query, where, onSnapshot } from './firebase-config.js';
+import { db, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, onSnapshot } from './firebase-config.js';
 import { CONSTANTS } from './constants.js';
 import { fuzzyMatchName } from './fuzzyMatch.js';
 
@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const winnerDisplay = document.getElementById('winner-display');
   const winnerName = document.getElementById('winner-name');
 
+  const winnerInfoPanel = document.getElementById('winner-info-panel');
+  const winnerInfoName = document.getElementById('winner-info-name');
+
   // Modals
   const participantModal = document.getElementById('participant-modal');
   const participantModalTitle = document.getElementById('participant-modal-title');
@@ -73,6 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const qrModalTitle = document.getElementById('qr-modal-title');
   const closeQrModal = document.getElementById('close-qr-modal');
   
+  const winnerModal = document.getElementById('winner-modal');
+  const winnerModalInner = document.getElementById('winner-modal-inner');
+  const closeWinnerModal = document.getElementById('close-winner-modal');
+  const winnerModalName = document.getElementById('winner-modal-name');
+  const winnerModalPhone = document.getElementById('winner-modal-phone');
+  const winnerModalTime = document.getElementById('winner-modal-time');
+  
   const btnShowStartModal = document.getElementById('btn-show-start-modal');
   const btnShowEndModal = document.getElementById('btn-show-end-modal');
   const btnZoomStart = document.getElementById('btn-zoom-start');
@@ -81,10 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal Closers
   closeParticipantModal.onclick = () => participantModal.classList.add('hidden');
   closeQrModal.onclick = () => qrModal.classList.add('hidden');
+  closeWinnerModal.onclick = () => {
+    winnerModalInner.classList.remove('scale-100');
+    winnerModalInner.classList.add('scale-95');
+    setTimeout(() => winnerModal.classList.add('hidden'), 200);
+  };
 
   let activeDrawId = null;
   let activeDrawName = "";
   let unsubscribeParticipants = null;
+  let unsubscribeDraw = null;
+  let currentWinnerData = null;
   let participantsData = { start: [], end: [] };
   let finalistsPool = [];
 
@@ -147,6 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function openDraw(id, name, session) {
+    if (unsubscribeParticipants) unsubscribeParticipants();
+    if (unsubscribeDraw) unsubscribeDraw();
+
     activeDrawId = id;
     activeDrawName = name;
     managePanel.classList.remove('hidden');
@@ -156,7 +176,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // reset UI
     finalistArea.classList.add('hidden');
     winnerDisplay.classList.add('hidden');
+    winnerInfoPanel.classList.add('hidden');
     participantsData = { start: [], end: [] };
+    currentWinnerData = null;
+
+    // Listen to Draw Doc for Winner changes
+    unsubscribeDraw = onSnapshot(doc(db, CONSTANTS.COLLECTION_DRAWS, activeDrawId), (docSnap) => {
+      if(docSnap.exists()) {
+        const data = docSnap.data();
+        if(data.winner) {
+          currentWinnerData = data.winner;
+          winnerInfoName.textContent = data.winner.fullName;
+          winnerInfoPanel.classList.remove('hidden');
+        } else {
+          currentWinnerData = null;
+          winnerInfoPanel.classList.add('hidden');
+        }
+      }
+    });
 
     // Setup Presentation Button
     btnPresentation.onclick = () => {
@@ -295,7 +332,38 @@ document.addEventListener('DOMContentLoaded', () => {
            origin: { y: 0.6 },
            colors: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6']
          });
+
+         // Save Winner to Firebase
+         const winnerDetails = participantsData.start.find(p => p.fullName === finalWinner) || { fullName: finalWinner, phone: 'Bilinmiyor' };
+         updateDoc(doc(db, CONSTANTS.COLLECTION_DRAWS, activeDrawId), {
+            winner: {
+              fullName: winnerDetails.fullName,
+              phone: winnerDetails.phone || 'Bilinmiyor',
+              wonAt: new Date().toISOString()
+            }
+         }).catch(e => console.error("Winner save error:", e));
        }
+    }, 50);
+  });
+
+  // Winner Info Panel Click (Open Modal)
+  winnerInfoPanel.addEventListener('click', () => {
+    if(!currentWinnerData) return;
+    winnerModalName.textContent = currentWinnerData.fullName;
+    winnerModalPhone.textContent = currentWinnerData.phone;
+    
+    try {
+      const dt = new Date(currentWinnerData.wonAt);
+      winnerModalTime.textContent = dt.toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' });
+    } catch(e) {
+      winnerModalTime.textContent = currentWinnerData.wonAt || "-";
+    }
+
+    winnerModal.classList.remove('hidden');
+    // slight delay for transition
+    setTimeout(() => {
+      winnerModalInner.classList.remove('scale-95');
+      winnerModalInner.classList.add('scale-100');
     }, 50);
   });
 
