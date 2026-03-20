@@ -1,4 +1,4 @@
-import { db, collection, getDocs, doc, query, where, onSnapshot } from './firebase-config.js';
+import { db, collection, getDocs, doc, query, where, onSnapshot, updateDoc } from './firebase-config.js';
 import { CONSTANTS } from './constants.js';
 import { fuzzyMatchName } from './fuzzyMatch.js';
 
@@ -41,16 +41,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     snapshot.forEach(docSnap => {
       const d = docSnap.data();
-      if (d.stage === CONSTANTS.STAGE_START) startList.push(d.fullName);
+      if (d.stage === CONSTANTS.STAGE_START) startList.push(d);
       else if (d.stage === CONSTANTS.STAGE_END) endList.push(d.fullName);
     });
 
     let availableEnds = [...endList];
 
-    startList.forEach(startName => {
+    startList.forEach(startObj => {
       for(let i=0; i < availableEnds.length; i++) {
-        if(fuzzyMatchName(startName, availableEnds[i])) {
-           finalistsPool.push(startName);
+        if(fuzzyMatchName(startObj.fullName, availableEnds[i])) {
+           finalistsPool.push(startObj.fullName);
+           if(!window.finalistDetails) window.finalistDetails = {};
+           window.finalistDetails[startObj.fullName] = startObj;
            availableEnds.splice(i, 1);
            break;
         }
@@ -104,14 +106,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       confetti({
         particleCount: 8,
         angle: 60,
-        spread: 55,
+        spread: 120,
         origin: { x: 0 },
         colors: colors
       });
       confetti({
         particleCount: 8,
         angle: 120,
-        spread: 55,
+        spread: 120,
         origin: { x: 1 },
         colors: colors
       });
@@ -128,6 +130,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (finalistsPool.length === 0) return;
 
     // Transition OUT Start State
+    determineBtn.disabled = true;
+    determineBtn.classList.add('cursor-not-allowed', 'opacity-50');
     startState.classList.add('hidden');
     
     // Transition IN Winner State
@@ -152,6 +156,20 @@ document.addEventListener('DOMContentLoaded', async () => {
          winnerNameEl.textContent = finalWinner;
          
          triggerConfetti();
+
+         // Save to DB so Admin syncs explicitly
+         try {
+           const winnerDetails = window.finalistDetails ? window.finalistDetails[finalWinner] : null;
+           updateDoc(doc(db, CONSTANTS.COLLECTION_DRAWS, drawId), {
+             winner: {
+               fullName: finalWinner,
+               phone: winnerDetails ? (winnerDetails.phone || 'Bilinmiyor') : 'Bilinmiyor',
+               wonAt: new Date().toISOString()
+             }
+           });
+         } catch(e) {
+           console.error("Presentation DB Write Error:", e);
+         }
        }
     }, 50);
   });
