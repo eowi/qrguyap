@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       determineBtn.disabled = false;
       determineBtn.classList.remove('cursor-not-allowed', 'opacity-50');
     } else {
-      infoEl.textContent = "Havuzda geçerli eşleşen finalist yok.";
+      infoEl.textContent = "Havuzda henüz eşleşen katılımcı bulunmuyor.";
     }
 
   } catch (err) {
