@@ -15,7 +15,7 @@ export const CONSTANTS = {
     ERROR_LOGIN: "Geçersiz ID veya şifre.",
     SUCCESS_LOGIN: "Giriş başarılı.",
     ERROR_FILL_FORM: "Lütfen adınızı ve soyadınızı giriniz.",
-    INFO_NO_FINALISTS: "Havuzda yeterli eşleşen finalist yok.",
+    INFO_NO_FINALISTS: "Havuzda henüz eşleşen katılımcı bulunmuyor.",
     SUCCESS_DRAW_CREATED: "Çekiliş başarıyla oluşturuldu."
   }
 };
