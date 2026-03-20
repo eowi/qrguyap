@@ -1,4 +1,4 @@
-import { db, collection, getDocs, query, where } from './firebase-config.js';
+import { db, collection, getDocs, doc, query, where, onSnapshot } from './firebase-config.js';
 import { CONSTANTS } from './constants.js';
 import { fuzzyMatchName } from './fuzzyMatch.js';
 
@@ -64,11 +64,64 @@ document.addEventListener('DOMContentLoaded', async () => {
       determineBtn.disabled = false;
       determineBtn.classList.remove('cursor-not-allowed', 'opacity-50');
     } else {
+      determineBtn.disabled = true;
+      determineBtn.classList.add('cursor-not-allowed', 'opacity-50');
       infoEl.textContent = "Havuzda henüz eşleşen katılımcı bulunmuyor.";
     }
 
+    // Live Sync: Listen for winner
+    onSnapshot(doc(db, CONSTANTS.COLLECTION_DRAWS, drawId), (docSnap) => {
+      if(docSnap.exists()) {
+        const data = docSnap.data();
+        if(data.winner) {
+          // Instant display without shuffle
+          startState.classList.add('hidden');
+          winnerState.classList.remove('hidden');
+          winnerState.classList.remove('scale-0');
+          winnerState.classList.add('scale-100');
+          
+          winnerNameEl.textContent = data.winner.fullName;
+          triggerConfetti();
+        }
+      }
+    });
+
   } catch (err) {
     infoEl.textContent = "Veriler çekilirken hata oluştu.";
+    console.error(err);
+  }
+
+  function triggerConfetti() {
+    // Avoid multiple confetti intervals
+    if(window._confettiRunning) return;
+    window._confettiRunning = true;
+    
+    // Huge Confetti Effect Continously
+    const end = Date.now() + 5 * 1000;
+    const colors = ['#bb0000', '#ffffff', '#ffd700', '#3b82f6', '#10b981'];
+
+    (function frame() {
+      confetti({
+        particleCount: 8,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+      confetti({
+        particleCount: 8,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      } else {
+        window._confettiRunning = false;
+      }
+    }());
   }
 
   determineBtn.addEventListener('click', () => {
@@ -98,30 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
          const finalWinner = finalistsPool[Math.floor(Math.random() * finalistsPool.length)];
          winnerNameEl.textContent = finalWinner;
          
-         // Huge Confetti Effect Continously
-         const end = Date.now() + 5 * 1000;
-         const colors = ['#bb0000', '#ffffff', '#ffd700', '#3b82f6', '#10b981'];
-
-         (function frame() {
-           confetti({
-             particleCount: 8,
-             angle: 60,
-             spread: 55,
-             origin: { x: 0 },
-             colors: colors
-           });
-           confetti({
-             particleCount: 8,
-             angle: 120,
-             spread: 55,
-             origin: { x: 1 },
-             colors: colors
-           });
-
-           if (Date.now() < end) {
-             requestAnimationFrame(frame);
-           }
-         }());
+         triggerConfetti();
        }
     }, 50);
   });
