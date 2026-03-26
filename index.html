@@ -2,61 +2,66 @@
 <html lang="tr">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Çekiliş Sistemi</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Çekiliş Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col relative font-sans">
-  <a href="admin.html"
-    class="absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-sm font-semibold px-4 py-2 rounded shadow transition">Admin
-    Giriş</a>
+    <a href="admin.html"
+        class="absolute top-4 right-4 bg-gray-800 hover:bg-gray-700 text-sm font-semibold px-4 py-2 rounded shadow transition">Admin
+        Giriş</a>
 
-  <div class="flex-grow flex items-center justify-center p-4">
-    <div class="bg-gray-800 rounded-xl shadow-2xl p-8 w-full max-w-md transition-all duration-300 transform scale-100"
-      id="app-container">
-      <h1 class="text-3xl font-bold mb-6 text-center text-blue-400" id="form-title">Çekiliş Katılım</h1>
-      <div id="welcome-msg" class="text-center text-gray-400 mb-6 hidden">
-        <p>Çekiliş oluşturmak için Admin Giriş'e tıklayın</p>
-      </div>
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="bg-gray-800 rounded-xl shadow-2xl p-8 w-full max-w-md transition-all duration-300 transform scale-100"
+            id="app-container">
+            <h1 class="text-3xl font-bold mb-6 text-center text-blue-400" id="form-title">Çekiliş Katılım</h1>
+            <div id="welcome-msg" class="text-center text-gray-400 mb-6 hidden">
+                <p>Çekiliş oluşturmak için Admin Giriş'e tıklayın</p>
+            </div>
 
-      <p id="error-msg" class="text-red-400 text-sm mb-4 hidden bg-red-900/30 p-3 rounded border border-red-800"></p>
-      
-      <form id="participation-form" class="space-y-5">
-        <div>
-          <label class="block text-sm font-medium mb-1 text-gray-300">Adınız</label>
-          <input type="text" id="fname" required placeholder="Örnek: Ahmet"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1 text-gray-300">Soyadınız</label>
-          <input type="text" id="lname" required placeholder="Örnek: Mutlu"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1 text-gray-300">Telefon Numarası</label>
-          <input type="tel" id="phone" required placeholder="05321234567" pattern="[0-9]{11}" maxlength="11" minlength="11" title="Lütfen 11 haneli telefon numaranızı giriniz (Örn: 05321234567)"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
-        </div>
-        <button type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-lg shadow-blue-500/30 transform hover:-translate-y-0.5 mt-4">Katıl</button>
-      </form>
+            <p id="error-msg" class="text-red-400 text-sm mb-4 hidden bg-red-900/30 p-3 rounded border border-red-800">
+            </p>
 
-      <div id="success-state" class="hidden text-center mt-6 animate-pulse">
-        <div class="text-green-400 text-6xl mb-4 font-bold">✓</div>
-        <h2 id="success-msg" class="text-xl font-semibold text-gray-100">Katılımınız Gerçekleşmiştir.</h2>
-      </div>
+            <form id="participation-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-gray-300">Adınız</label>
+                    <input type="text" id="fname" required placeholder="Örnek: Ahmet"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-gray-300">Soyadınız</label>
+                    <input type="text" id="lname" required placeholder="Örnek: Mutlu"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-gray-300">Telefon Numarası</label>
+                    <input type="tel" id="phone" required placeholder="05321234567" pattern="[0-9]{11}" maxlength="11"
+                        minlength="11" title="Lütfen 11 haneli telefon numaranızı giriniz (Örn: 05321234567)"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition text-white placeholder-gray-400/50">
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-lg shadow-blue-500/30 transform hover:-translate-y-0.5 mt-4">Katıl</button>
+            </form>
+
+            <div id="success-state" class="hidden text-center mt-6 animate-pulse">
+                <div class="text-green-400 text-6xl mb-4 font-bold">✓</div>
+                <h2 id="success-msg" class="text-xl font-semibold text-gray-100">Katılımınız Gerçekleşmiştir.</h2>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Footer Branding -->
-  <div class="fixed bottom-4 left-4 z-50 flex items-center gap-3 bg-gray-900/60 p-2 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-lg pointer-events-none fade-in">
-    <img src="assets/guyap-logo.png" alt="GÜYAP Logo" class="h-8 w-auto object-contain opacity-80 transition-opacity">
-    <span class="text-[10px] text-gray-400 font-mono tracking-widest pl-2 pr-2 uppercase drop-shadow-md">Developer: Barış Soylu</span>
-  </div>
+    <!-- Footer Branding -->
+    <div
+        class="fixed bottom-4 left-4 z-50 flex items-center gap-3 bg-gray-900/60 p-2 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-lg pointer-events-none fade-in">
+        <img src="assets/guyap-logo.png" alt="GÜYAP Logo"
+            class="h-8 w-auto object-contain opacity-80 transition-opacity">
+        <span class="text-[10px] text-gray-400 font-mono tracking-widest pl-2 pr-2 uppercase drop-shadow-md">Developer:
+            Barış Soylu</span>
+    </div>
 
-  <script type="module" src="participant.js"></script>
+    <script type="module" src="participant.js"></script>
 </body>
 
 </html>
