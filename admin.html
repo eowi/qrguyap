@@ -2,317 +2,318 @@
 <html lang="tr">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - QR Çekiliş Sistemi</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- QR Code js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Canvas Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    /* Custom scrollbar for Dark theme */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - QR Çekiliş Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- QR Code js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Custom scrollbar for Dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    ::-webkit-scrollbar-track {
-      background: #1f2937;
-    }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
 
-    ::-webkit-scrollbar-thumb {
-      background: #4b5563;
-      border-radius: 4px;
-    }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #6b7280;
-    }
-  </style>
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-900 text-white min-h-screen font-sans selection:bg-blue-500 selection:text-white">
 
-  <!-- Login Section -->
-  <div id="login-section" class="flex min-h-screen items-center justify-center p-4">
-    <div class="bg-gray-800 rounded-xl shadow-2xl p-8 w-full max-w-md border border-gray-700">
-      <h1
-        class="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-        Admin Login</h1>
-      <p id="login-error" class="text-red-400 text-sm mb-4 hidden bg-red-900/30 p-3 rounded border border-red-800"></p>
+    <!-- Login Section -->
+    <div id="login-section" class="flex min-h-screen items-center justify-center p-4">
+        <div class="bg-gray-800 rounded-xl shadow-2xl p-8 w-full max-w-md border border-gray-700">
+            <h1
+                class="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                Admin Login</h1>
+            <p id="login-error"
+                class="text-red-400 text-sm mb-4 hidden bg-red-900/30 p-3 rounded border border-red-800"></p>
 
-      <form id="login-form" class="space-y-5">
-        <div>
-          <label class="block text-sm font-medium mb-1 text-gray-300">Kullanıcı ID</label>
-          <input type="text" id="admin-id"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white transition"
-            required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1 text-gray-300">Şifre</label>
-          <input type="password" id="admin-pass"
-            class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white transition"
-            required>
-        </div>
-        <button type="submit"
-          class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg transform hover:-translate-y-0.5 mt-4">Giriş
-          Yap</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Dashboard Section -->
-  <div id="dashboard-section" class="hidden min-h-screen flex flex-col">
-    <header class="bg-gray-800 p-4 border-b border-gray-700 flex justify-between items-center shadow-md">
-      <div class="flex items-center gap-3">
-        <span
-          class="text-lg md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Gazi Üniversitesi Yapı Topluluğu Çekiliş Sistemi</span>
-        <span class="bg-gray-700 px-2 py-1 rounded text-xs text-gray-400 font-mono hidden md:inline-block">ADMIN</span>
-      </div>
-      <button id="logout-btn"
-        class="bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors border border-gray-600 hover:border-red-500">Çıkış
-        Yap</button>
-    </header>
-
-    <main class="flex-grow p-4 md:p-6 flex flex-col md:flex-row gap-6">
-
-      <!-- List & Create Draws -->
-      <div id="draws-panel" class="w-full md:w-1/3 flex flex-col gap-6">
-        <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
-          <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-gray-100">Yeni Çekiliş</h2>
-          <form id="create-draw-form" class="space-y-4">
-            <input type="text" id="draw-name" placeholder="Çekiliş Adı (örn: Yılbaşı)"
-              class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
-              required>
-            <select id="draw-session"
-              class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
-              required>
-              <option value="" disabled selected>Oturum Numarası Seçin</option>
-              <option value="1">Oturum: 1</option>
-              <option value="2">Oturum: 2</option>
-              <option value="3">Oturum: 3</option>
-              <option value="4">Oturum: 4</option>
-              <option value="5">Oturum: 5</option>
-              <option value="6">Oturum: 6</option>
-              <option value="7">Oturum: 7</option>
-              <option value="8">Oturum: 8</option>
-              <option value="9">Oturum: 9</option>
-              <option value="10">Oturum: 10</option>
-            </select>
-            <button type="submit"
-              class="w-full bg-green-600 hover:bg-green-500 py-2.5 rounded-lg font-bold transition shadow-lg text-white">Oluştur</button>
-          </form>
-        </div>
-
-        <div class="bg-gray-800 rounded-xl shadow-lg p-6 flex-grow border border-gray-700 flex flex-col">
-          <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-gray-100">Mevcut Çekilişler</h2>
-          <ul id="draws-list" class="space-y-2 overflow-y-auto flex-grow pr-1">
-            <li class="text-gray-400 text-sm animate-pulse">Yükleniyor...</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Detail Manage Draw -->
-      <div id="draw-manage-panel"
-        class="hidden w-full md:w-2/3 bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col border border-gray-700">
-        <div
-          class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-700 pb-4 mb-6 gap-4">
-          <div>
-            <h2 id="manage-title" class="text-2xl font-bold text-white">Çekiliş Yönetimi</h2>
-            <span id="manage-session"
-              class="inline-block mt-2 text-gray-400 bg-gray-900 px-3 py-1 rounded-full text-sm font-mono border border-gray-700"></span>
-          </div>
-          <button id="btn-presentation"
-            class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold transition shadow-lg flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-              </path>
-            </svg>
-            Tahtaya Yansıt (Sunum Modu)
-          </button>
-        </div>
-
-        <!-- Participants Stats -->
-        <div class="grid grid-cols-2 gap-4 mb-6">
-          <div
-            class="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center relative overflow-hidden group cursor-pointer hover:border-blue-500 transition"
-            id="btn-show-start-modal">
-            <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition"></div>
-            <div class="text-4xl font-black text-blue-400 mb-1" id="stat-start">0</div>
-            <div class="text-sm font-medium text-gray-400 uppercase tracking-wider">Etkinlik Başı Kişi Sayısı</div>
-          </div>
-          <div
-            class="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center relative overflow-hidden group cursor-pointer hover:border-orange-500 transition"
-            id="btn-show-end-modal">
-            <div class="absolute inset-0 bg-orange-500/5 group-hover:bg-orange-500/10 transition"></div>
-            <div class="text-4xl font-black text-orange-400 mb-1" id="stat-end">0</div>
-            <div class="text-sm font-medium text-gray-400 uppercase tracking-wider">Etkinlik Bitiş Kişi Sayısı</div>
-          </div>
-        </div>
-
-        <!-- QRs -->
-        <div class="flex flex-col sm:flex-row gap-6 justify-center mb-8 border-b border-gray-700 pb-8">
-          <div
-            class="text-center bg-gray-900 border border-gray-700 p-5 rounded-xl shadow-inner flex-1 flex flex-col items-center">
-            <h3 class="text-lg font-bold mb-4 text-blue-400 flex items-center gap-2"><span
-                class="w-2 h-2 rounded-full bg-blue-400"></span> Etkinlik Başı QR'ı</h3>
-            <div id="qr-start" class="bg-white p-2 rounded-lg inline-block border-4 border-gray-800"></div>
-            <button id="btn-zoom-start"
-              class="mt-4 bg-gray-800 border border-gray-600 hover:bg-blue-600 text-gray-300 hover:text-white px-4 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1 shadow">
-              <span>🔍 Büyüt</span>
-            </button>
-            <div class="mt-3 text-[10px] text-gray-600 break-all select-all font-mono px-2" id="qr-start-link"></div>
-          </div>
-          <div
-            class="text-center bg-gray-900 border border-gray-700 p-5 rounded-xl shadow-inner flex-1 flex flex-col items-center">
-            <h3 class="text-lg font-bold mb-4 text-orange-400 flex items-center gap-2"><span
-                class="w-2 h-2 rounded-full bg-orange-400"></span> Etkinlik Bitiş QR'ı</h3>
-            <div id="qr-end" class="bg-white p-2 rounded-lg inline-block border-4 border-gray-800"></div>
-            <button id="btn-zoom-end"
-              class="mt-4 bg-gray-800 border border-gray-600 hover:bg-orange-600 text-gray-300 hover:text-white px-4 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1 shadow">
-              <span>🔍 Büyüt</span>
-            </button>
-            <div class="mt-3 text-[10px] text-gray-600 break-all select-all font-mono px-2" id="qr-end-link"></div>
-          </div>
-        </div>
-
-        <!-- Fuzzy & Winner -->
-        <div class="flex flex-col flex-grow items-center justify-center">
-          <button id="run-fuzzy-btn"
-            class="bg-purple-600 hover:bg-purple-500 font-bold py-3 px-8 rounded-full shadow-[0_0_15px_rgba(147,51,234,0.5)] transition-all mb-6 flex items-center gap-2 transform hover:-translate-y-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
-              </path>
-            </svg>
-            Katılımcıları Eşleştir
-          </button>
-
-          <div id="finalists-area" class="hidden w-full flex flex-col items-center flex-grow">
-            <div
-              class="bg-gray-900 border border-green-500/30 rounded-xl w-full max-w-lg p-5 mb-8 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
-              <h3 class="text-lg font-bold text-green-400 mb-3 flex items-center justify-between">
-                Katılımcı Havuzu
-                <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm" id="finalist-count">0
-                  Kişi</span>
-              </h3>
-              <ul id="finalist-list" class="max-h-40 overflow-y-auto space-y-2 text-sm text-gray-300 pr-2">
-                <!-- Finalist items -->
-              </ul>
-            </div>
-
-            <button id="randomizer-btn"
-              class="relative group overflow-hidden bg-gray-900 border-2 border-transparent bg-gradient-to-r from-blue-500 to-green-500 bg-origin-border text-white font-extrabold text-3xl py-5 px-16 rounded-full shadow-[0_10px_30px_rgba(59,130,246,0.3)] transform hover:scale-105 transition-all mb-8">
-              <div
-                class="absolute inset-0 bg-gradient-to-r from-blue-600 to-green-600 opacity-0 group-hover:opacity-100 transition duration-300">
-              </div>
-              <span class="relative z-10 flex items-center gap-3">
-                🎲 ÇEKİLİŞİ BAŞLAT 🎲
-              </span>
-            </button>
-
-            <!-- WINNER DISPLAY -->
-            <div id="winner-display"
-              class="hidden w-full max-w-xl text-center p-8 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 relative overflow-hidden backdrop-blur-sm shadow-2xl mb-8">
-              <div
-                class="absolute -top-10 -left-10 w-40 h-40 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob">
-              </div>
-              <div
-                class="absolute -bottom-10 -right-10 w-40 h-40 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000">
-              </div>
-
-              <div class="relative z-10">
-                <div class="text-yellow-500 font-bold tracking-[0.2em] uppercase mb-2 text-sm">Büyük Kazanan</div>
-                <div id="winner-name" class="text-4xl md:text-5xl font-black text-white drop-shadow-lg break-words">
-                  -
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-gray-300">Kullanıcı ID</label>
+                    <input type="text" id="admin-id"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white transition"
+                        required>
                 </div>
-              </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-gray-300">Şifre</label>
+                    <input type="password" id="admin-pass"
+                        class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white transition"
+                        required>
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg transform hover:-translate-y-0.5 mt-4">Giriş
+                    Yap</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-section" class="hidden min-h-screen flex flex-col">
+        <header class="bg-gray-800 p-4 border-b border-gray-700 flex justify-between items-center shadow-md">
+            <div class="flex items-center gap-3">
+                <span
+                    class="text-lg md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Gazi
+                    Üniversitesi Yapı Topluluğu Çekiliş Sistemi</span>
+                <span
+                    class="bg-gray-700 px-2 py-1 rounded text-xs text-gray-400 font-mono hidden md:inline-block">ADMIN</span>
+            </div>
+            <button id="logout-btn"
+                class="bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors border border-gray-600 hover:border-red-500">Çıkış
+                Yap</button>
+        </header>
+
+        <main class="flex-grow p-4 md:p-6 flex flex-col md:flex-row gap-6">
+
+            <!-- List & Create Draws -->
+            <div id="draws-panel" class="w-full md:w-1/3 flex flex-col gap-6">
+                <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-gray-100">Yeni Çekiliş</h2>
+                    <form id="create-draw-form" class="space-y-4">
+                        <input type="text" id="draw-name" placeholder="Çekiliş Adı (örn: Yılbaşı)"
+                            class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
+                            required>
+                        <select id="draw-session"
+                            class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"
+                            required>
+                            <option value="" disabled selected>Oturum Numarası Seçin</option>
+                            <option value="1">Oturum: 1</option>
+                            <option value="2">Oturum: 2</option>
+                            <option value="3">Oturum: 3</option>
+                            <option value="4">Oturum: 4</option>
+                            <option value="5">Oturum: 5</option>
+                            <option value="6">Oturum: 6</option>
+                            <option value="7">Oturum: 7</option>
+                            <option value="8">Oturum: 8</option>
+                            <option value="9">Oturum: 9</option>
+                            <option value="10">Oturum: 10</option>
+                        </select>
+                        <button type="submit"
+                            class="w-full bg-green-600 hover:bg-green-500 py-2.5 rounded-lg font-bold transition shadow-lg text-white">Oluştur</button>
+                    </form>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl shadow-lg p-6 flex-grow border border-gray-700 flex flex-col">
+                    <h2 class="text-xl font-bold mb-4 border-b border-gray-700 pb-2 text-gray-100">Mevcut Çekilişler
+                    </h2>
+                    <ul id="draws-list" class="space-y-2 overflow-y-auto flex-grow pr-1">
+                        <li class="text-gray-400 text-sm animate-pulse">Yükleniyor...</li>
+                    </ul>
+                </div>
             </div>
 
-            <!-- WINNER INFO PANEL (Synced from Firebase) -->
-            <div id="winner-info-panel" class="hidden w-full max-w-lg mb-4 bg-green-900/40 border border-green-500/50 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-green-800/50 transition">
-              <div>
-                <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-1">KAZANAN (KAYITLI)</div>
-                <div id="winner-info-name" class="text-xl font-black text-white">İsim</div>
-              </div>
-              <div class="text-green-400">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-              </div>
+            <!-- Detail Manage Draw -->
+            <div id="draw-manage-panel"
+                class="hidden w-full md:w-2/3 bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col border border-gray-700">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-700 pb-4 mb-6 gap-4">
+                    <div>
+                        <h2 id="manage-title" class="text-2xl font-bold text-white">Çekiliş Yönetimi</h2>
+                        <span id="manage-session"
+                            class="inline-block mt-2 text-gray-400 bg-gray-900 px-3 py-1 rounded-full text-sm font-mono border border-gray-700"></span>
+                    </div>
+                    <button id="btn-presentation"
+                        class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold transition shadow-lg flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        Tahtaya Yansıt (Sunum Modu)
+                    </button>
+                </div>
+
+                <!-- Participants Stats -->
+                <div class="grid grid-cols-1 gap-4 mb-6">
+                    <div class="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center relative overflow-hidden group cursor-pointer hover:border-blue-500 transition"
+                        id="btn-show-modal">
+                        <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition"></div>
+                        <div class="text-4xl font-black text-blue-400 mb-1" id="stat-total">0</div>
+                        <div class="text-sm font-medium text-gray-400 uppercase tracking-wider">Toplam Katılımcı Sayısı</div>
+                    </div>
+                </div>
+
+                <!-- QRs -->
+                <div class="flex flex-col sm:flex-row gap-6 justify-center mb-8 border-b border-gray-700 pb-8 items-center cursor-pointer">
+                    <div
+                        class="text-center bg-gray-900 border border-gray-700 p-5 rounded-xl shadow-inner flex flex-col items-center w-full max-w-sm">
+                        <h3 class="text-lg font-bold mb-4 text-blue-400 flex items-center gap-2"><span
+                                class="w-2 h-2 rounded-full bg-blue-400"></span> Çekiliş Katılım QR'ı</h3>
+                        <div id="qr-code" class="bg-white p-2 rounded-lg inline-block border-4 border-gray-800"></div>
+                        <button id="btn-zoom-qr"
+                            class="mt-4 bg-gray-800 border border-gray-600 hover:bg-blue-600 text-gray-300 hover:text-white px-4 py-1.5 rounded-full text-xs font-semibold transition flex items-center gap-1 shadow">
+                            <span>🔍 Büyüt</span>
+                        </button>
+                        <div class="mt-3 text-[10px] text-gray-600 break-all select-all font-mono px-2"
+                            id="qr-link"></div>
+                    </div>
+                </div>
+
+                <!-- Fuzzy & Winner -->
+                <div class="flex flex-col flex-grow items-center justify-center">
+
+                    <div id="finalists-area" class="w-full flex flex-col items-center flex-grow mt-4">
+                        <div
+                            class="bg-gray-900 border border-green-500/30 rounded-xl w-full max-w-lg p-5 mb-8 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
+                            <h3 class="text-lg font-bold text-green-400 mb-3 flex items-center justify-between">
+                                Çekiliş Havuzu
+                                <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm"
+                                    id="finalist-count">0
+                                    Kişi</span>
+                            </h3>
+                            <ul id="finalist-list"
+                                class="max-h-40 overflow-y-auto space-y-2 text-sm text-gray-300 pr-2">
+                                <!-- Finalist items -->
+                            </ul>
+                        </div>
+
+                        <button id="randomizer-btn"
+                            class="relative group overflow-hidden bg-gray-900 border-2 border-transparent bg-gradient-to-r from-blue-500 to-green-500 bg-origin-border text-white font-extrabold text-3xl py-5 px-16 rounded-full shadow-[0_10px_30px_rgba(59,130,246,0.3)] transform hover:scale-105 transition-all mb-8">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-blue-600 to-green-600 opacity-0 group-hover:opacity-100 transition duration-300">
+                            </div>
+                            <span class="relative z-10 flex items-center gap-3">
+                                🎲 ÇEKİLİŞİ BAŞLAT 🎲
+                            </span>
+                        </button>
+
+                        <!-- WINNER DISPLAY -->
+                        <div id="winner-display"
+                            class="hidden w-full max-w-xl text-center p-8 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 relative overflow-hidden backdrop-blur-sm shadow-2xl mb-8">
+                            <div
+                                class="absolute -top-10 -left-10 w-40 h-40 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob">
+                            </div>
+                            <div
+                                class="absolute -bottom-10 -right-10 w-40 h-40 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000">
+                            </div>
+
+                            <div class="relative z-10">
+                                <div class="text-yellow-500 font-bold tracking-[0.2em] uppercase mb-2 text-sm">Büyük
+                                    Kazanan</div>
+                                <div id="winner-name"
+                                    class="text-4xl md:text-5xl font-black text-white drop-shadow-lg break-words">
+                                    -
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WINNER INFO PANEL (Synced from Firebase) -->
+                        <div id="winner-info-panel"
+                            class="hidden w-full max-w-lg mb-4 bg-gray-900 border border-green-500/50 rounded-xl p-4 flex flex-col justify-between transition gap-2">
+                            <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 border-b border-green-700/50 pb-2">KAZANANLAR LİSTESİ</div>
+                            <div id="winners-list-container" class="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1">
+                                <!-- Listed Winners -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    </div>
+                </div>
             </div>
 
-          </div>
-        </div>
-      </div>
-
-    </main>
-  </div>
-
-  <!-- PARTICIPANT MODAL -->
-  <div id="participant-modal"
-    class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-gray-800 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[85vh] border border-gray-700">
-      <div class="p-5 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 rounded-t-2xl">
-        <h3 id="participant-modal-title" class="text-xl font-bold text-white tracking-wide">Katılımcı Listesi</h3>
-        <button id="close-participant-modal"
-          class="text-gray-400 hover:text-white transition text-3xl leading-none">&times;</button>
-      </div>
-      <div class="p-2 overflow-y-auto flex-grow bg-gray-900/50 rounded-b-2xl">
-        <ul id="participant-modal-list" class="divide-y divide-gray-700/50 p-2 text-sm text-gray-300">
-          <!-- Populated by JS -->
-        </ul>
-      </div>
+        </main>
     </div>
-  </div>
 
-  <!-- WINNER DETAIL MODAL -->
-  <div id="winner-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[55] flex items-center justify-center p-4 shadow-2xl">
-    <div class="bg-gray-800 rounded-2xl w-full max-w-sm shadow-2xl flex flex-col border border-green-500/30 overflow-hidden transform transition-all duration-300 scale-95" id="winner-modal-inner">
-      <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center relative pointer-events-none">
-        <div class="pointer-events-auto">
-          <button id="close-winner-modal" class="absolute top-4 right-4 text-white/70 hover:text-white transition text-3xl leading-none">&times;</button>
+    <!-- PARTICIPANT MODAL -->
+    <div id="participant-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div
+            class="bg-gray-800 rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[85vh] border border-gray-700">
+            <div class="p-5 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 rounded-t-2xl">
+                <h3 id="participant-modal-title" class="text-xl font-bold text-white tracking-wide">Katılımcı Listesi
+                </h3>
+                <button id="close-participant-modal"
+                    class="text-gray-400 hover:text-white transition text-3xl leading-none">&times;</button>
+            </div>
+            <div class="p-2 overflow-y-auto flex-grow bg-gray-900/50 rounded-b-2xl">
+                <ul id="participant-modal-list" class="divide-y divide-gray-700/50 p-2 text-sm text-gray-300">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
         </div>
-        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/30">
-          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        </div>
-        <h3 class="text-2xl font-black text-white tracking-widest drop-shadow-md">KAZANAN</h3>
-      </div>
-      <div class="p-6 bg-gray-900 flex flex-col gap-5 border-t border-green-500/20">
-        <div>
-          <label class="text-[10px] text-green-500 uppercase font-black tracking-widest pl-1">Ad Soyad</label>
-          <div id="winner-modal-name" class="text-xl font-bold text-white mt-1 bg-gray-800/80 px-3 py-2 rounded-lg border border-gray-700"></div>
-        </div>
-        <div>
-          <label class="text-[10px] text-green-500 uppercase font-black tracking-widest pl-1">Telefon Numarası</label>
-          <div id="winner-modal-phone" class="text-lg text-green-400 mt-1 font-mono bg-gray-800/80 px-3 py-2 rounded-lg border border-gray-700 font-semibold tracking-wide"></div>
-        </div>
-        <div>
-          <label class="text-[10px] text-green-500 uppercase font-black tracking-widest pl-1">Çekiliş Zamanı</label>
-          <div id="winner-modal-time" class="text-sm text-gray-400 mt-1 bg-gray-800/80 px-3 py-2 rounded-lg border border-gray-700 font-mono"></div>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- QR MODAL -->
-  <div id="qr-modal"
-    class="hidden fixed inset-0 bg-black/95 backdrop-blur-md z-[60] flex flex-col items-center justify-center p-4">
-    <button id="close-qr-modal"
-      class="absolute top-6 right-6 md:top-10 md:right-10 text-gray-400 hover:text-white transition text-5xl md:text-7xl leading-none">&times;</button>
-    <div id="qr-modal-content"
-      class="bg-white p-6 rounded-2xl shadow-[0_0_50px_rgba(255,255,255,0.1)] border-8 border-gray-900 transition-transform transform scale-100 hover:scale-105 duration-300">
+    <!-- WINNER DETAIL MODAL -->
+    <div id="winner-modal"
+        class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-[55] flex items-center justify-center p-4 shadow-2xl">
+        <div class="bg-gray-800 rounded-2xl w-full max-w-sm shadow-2xl flex flex-col border border-green-500/30 overflow-hidden transform transition-all duration-300 scale-95"
+            id="winner-modal-inner">
+            <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center relative pointer-events-none">
+                <div class="pointer-events-auto">
+                    <button id="close-winner-modal"
+                        class="absolute top-4 right-4 text-white/70 hover:text-white transition text-3xl leading-none">&times;</button>
+                </div>
+                <div
+                    class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm border border-white/30">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-black text-white tracking-widest drop-shadow-md">KAZANAN</h3>
+            </div>
+            <div class="p-6 bg-gray-900 flex flex-col gap-5 border-t border-green-500/20">
+                <div>
+                    <label class="text-[10px] text-green-500 uppercase font-black tracking-widest pl-1">Ad Soyad</label>
+                    <div id="winner-modal-name"
+                        class="text-xl font-bold text-white mt-1 bg-gray-800/80 px-3 py-2 rounded-lg border border-gray-700">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] text-green-500 uppercase font-black tracking-widest pl-1">Telefon
+                        Numarası</label>
+                    <div id="winner-modal-phone"
+                        class="text-lg text-green-400 mt-1 font-mono bg-gray-800/80 px-3 py-2 rounded-lg border border-gray-700 font-semibold tracking-wide">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] text-green-500 uppercase font-black tracking-widest pl-1">Çekiliş
+                        Zamanı</label>
+                    <div id="winner-modal-time"
+                        class="text-sm text-gray-400 mt-1 bg-gray-800/80 px-3 py-2 rounded-lg border border-gray-700 font-mono">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="qr-modal-title"
-      class="mt-10 text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 tracking-widest uppercase drop-shadow-2xl text-center">
+
+    <!-- QR MODAL -->
+    <div id="qr-modal"
+        class="hidden fixed inset-0 bg-black/95 backdrop-blur-md z-[60] flex flex-col items-center justify-center p-4">
+        <button id="close-qr-modal"
+            class="absolute top-6 right-6 md:top-10 md:right-10 text-gray-400 hover:text-white transition text-5xl md:text-7xl leading-none">&times;</button>
+        <div id="qr-modal-content"
+            class="bg-white p-6 rounded-2xl shadow-[0_0_50px_rgba(255,255,255,0.1)] border-8 border-gray-900 transition-transform transform scale-100 hover:scale-105 duration-300">
+        </div>
+        <div id="qr-modal-title"
+            class="mt-10 text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 tracking-widest uppercase drop-shadow-2xl text-center">
+        </div>
     </div>
-  </div>
 
-  <!-- Footer Branding -->
-  <div class="fixed bottom-4 left-4 z-50 flex items-center gap-3 bg-gray-900/60 p-2 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-lg pointer-events-none">
-    <img src="assets/guyap-logo.png" alt="GÜYAP Logo" class="h-8 w-auto object-contain opacity-80 transition-opacity">
-    <span class="text-[10px] text-gray-400 font-mono tracking-widest pl-2 pr-2 uppercase drop-shadow-md">Developer: Barış Soylu</span>
-  </div>
+    <!-- Footer Branding -->
+    <div
+        class="fixed bottom-4 left-4 z-50 flex items-center gap-3 bg-gray-900/60 p-2 rounded-full backdrop-blur-sm border border-gray-700/50 shadow-lg pointer-events-none">
+        <img src="assets/guyap-logo.png" alt="GÜYAP Logo"
+            class="h-8 w-auto object-contain opacity-80 transition-opacity">
+        <span class="text-[10px] text-gray-400 font-mono tracking-widest pl-2 pr-2 uppercase drop-shadow-md">Developer:
+            Barış Soylu</span>
+    </div>
 
-  <script type="module" src="admin.js"></script>
+    <script type="module" src="admin.js"></script>
 </body>
 
 </html>
