@@ -237,12 +237,24 @@ document.addEventListener('DOMContentLoaded', () => {
         listenToParticipants(id);
     }
 
+    let qrInstance = null;
     function generateQRCodes(id, name) {
         const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
         const qrUrl = `${baseUrl}?draw=${id}&name=${encodeURIComponent(name)}`;
 
-        document.getElementById('qr-code').innerHTML = '';
-        new QRCode(document.getElementById("qr-code"), { text: qrUrl, width: 150, height: 150, colorDark: "#000000", colorLight: "#ffffff" });
+        if (!qrInstance) {
+            qrInstance = new QRCode(document.getElementById("qr-code"), { 
+                text: qrUrl, 
+                width: 150, 
+                height: 150, 
+                colorDark: "#000000", 
+                colorLight: "#ffffff" 
+            });
+        } else {
+            qrInstance.clear();
+            qrInstance.makeCode(qrUrl);
+        }
+        
         document.getElementById('qr-link').textContent = qrUrl;
     }
 
